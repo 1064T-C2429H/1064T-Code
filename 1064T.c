@@ -19,6 +19,56 @@
 void pre_auton(){
 }
 
+void driveTank(){
+	motor[leftFront] = vexRT[Ch3];
+	motor[rightFront] = -vexRT[Ch2];
+	motor[leftBack] = vexRT[Ch3];
+	motor[rightBack] = -vexRT[Ch2];
+}
+
+void driveArcade(int joy){
+	motor[leftFront] = joy;
+	motor[rightFront] = -joy;
+	motor[leftBack] = joy;
+	motor[rightBack] = -joy;
+}
+
+void driveForward(float time){ //TODO: PID LOOP
+	motor[leftFront] = 127;
+	motor[rightFront] = -127;
+	motor[leftBack] = 127;
+	motor[rightBack] = -127;
+	wait1Msec(time);
+	motor[leftFront] = 0;
+	motor[rightFront] = 0;
+	motor[leftBack] = 0;
+	motor[rightBack] = 0;
+}
+
+void driveBackward(float time){ //TODO: PID LOOP
+	motor[leftFront] = -127;
+	motor[rightFront] = 127;
+	motor[leftBack] = -127;
+	motor[rightBack] = 127;
+	wait1Msec(time);
+	motor[leftFront] = 0;
+	motor[rightFront] = 0;
+	motor[leftBack] = 0;
+	motor[rightBack] = 0;
+}
+
+void lift(int power){
+	motor[YRightLift] = power;
+	motor[RightLift] = power;
+	motor[YLeftLift] = -power;
+	motor[LeftLift] = -power;
+}
+
+void claw(int power){
+	motor[ClawLeft] = power;
+	motor[ClawRight] = power;
+}
+
 task autonomous(){
 }
 
@@ -48,61 +98,38 @@ task usercontrol(){
 		}
 
 		if(vexRT[Btn6U]){ // Lift up
-			motor[YRightLift] = 127;
-			motor[RightLift] = 127;
-			motor[YLeftLift] = -127;
-			motor[LeftLift] = -127;
+			lift(127);
+		}else if(vexRT[Btn5U]){// Lift down
+			lift(-127);
+		}else{
+			lift(0);
 		}
-		if(vexRT[Btn5U]){// Lift down
-			motor[YRightLift] = -127;
-			motor[RightLift] = -127;
-			motor[YLeftLift] = 127;
-			motor[LeftLift] = 127;
-		}
+
 		if(vexRT[Btn6D]){ // Open claw
-			motor[ClawLeft] = 127;
-			motor[ClawRight] = 127;
-		}
-		if(vexRT[Btn5D]){ // Close claw
-			motor[ClawLeft] = -127;
-			motor[ClawRight] = -127;
+			claw(127);
+		}else if(vexRT[Btn5D]){ // Close claw
+			claw(-127);
+		}else{
+			claw(0);
 		}
 
 		if(useTank){
-			motor[leftFront] = vexRT[Ch3];
-			motor[rightFront] = -vexRT[Ch2];
-			motor[leftBack] = vexRT[Ch3];
-			motor[rightBack] = -vexRT[Ch2];
+			driveTank();
 		}else{
 			int joy_x = vexRT[Ch1];
 			int joy_y = vexRT[Ch3];
 			int joy_threashold = 10;
 
 			if((abs(joy_y) > joy_threashold) && (joy_y>0)){
-				motor[leftFront] = joy_y;
-				motor[rightFront] = joy_y;
-				motor[leftBack] = joy_y;
-				motor[rightBack] = joy_y;
+				driveArcade(joy_y);
 			}else if((abs(joy_y) > joy_threashold) && (joy_y<0)){
-				motor[leftFront] = joy_y;
-				motor[rightFront] = joy_y;
-				motor[leftBack] = joy_y;
-				motor[rightBack] = joy_y;
+				driveArcade(joy_y);
 			}else if((abs(joy_x) > joy_threashold) && (joy_x>0)){
-				motor[leftFront] = joy_x;
-				motor[rightFront] = joy_x;
-				motor[leftBack] = joy_x;
-				motor[rightBack] = joy_x;
+				driveArcade(joy_x);
 			}else if((abs(joy_x) > joy_threashold) && (joy_x<0)){
-				motor[leftFront] = joy_x;
-				motor[rightFront] = joy_x;
-				motor[leftBack] = joy_x;
-				motor[rightBack] = joy_x;
+				driveArcade(joy_x);
 			}else{
-				motor[leftFront] = 0;
-				motor[rightFront] = 0;
-				motor[leftBack] = 0;
-				motor[rightBack] = 0;
+				driveArcade(0);
 			}
 		}
 	}
