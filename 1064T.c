@@ -20,10 +20,10 @@ void pre_auton(){
 }
 
 void driveTank(){
-	motor[leftFront] = vexRT[leftFront];
-	motor[rightFront] = -vexRT[rightFront];
-	motor[leftBack] = vexRT[leftBack];
-	motor[rightBack] = -vexRT[rightBack];
+	motor[leftFront] = vexRT[Ch3];
+	motor[rightFront] = -vexRT[Ch2];
+	motor[leftBack] = vexRT[Ch3];
+	motor[rightBack] = -vexRT[Ch2];
 }
 
 void driveArcade(int joy){
