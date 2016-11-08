@@ -118,13 +118,14 @@ task usercontrol(){
 		}else{
 			int joy_x = vexRT[Ch1];
 			int joy_y = vexRT[Ch2];
-			int joy_threashold = 10;
+			int joy_threashold = 10; // Experimental Value
 
 			if((abs(joy_y) > joy_threashold) && (joy_y>0)){
 				driveArcade(joy_y);
 			}else if((abs(joy_y) > joy_threashold) && (joy_y<0)){
 				driveArcade(joy_y);
-			}else if((abs(joy_x) > joy_threashold) && (joy_x>0)){
+			}
+			if((abs(joy_x) > joy_threashold) && (joy_x>0)){
 				driveArcade(joy_x);
 			}else if((abs(joy_x) > joy_threashold) && (joy_x<0)){
 				driveArcade(joy_x);
