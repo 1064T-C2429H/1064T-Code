@@ -1,9 +1,9 @@
 #pragma config(Sensor, dgtl1,  ledTank,        sensorLEDtoVCC)
 #pragma config(Sensor, dgtl2,  ledArcade,      sensorLEDtoVCC)
-#pragma config(Motor,  port1,           leftFront,     tmotorVex393_HBridge, openLoop, reversed)
+#pragma config(Motor,  port1,           leftFront,     tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           rightFront,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           leftBack,      tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port4,           rightBack,     tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port4,           rightBack,     tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           YRightLift,    tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           RightLift,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port7,           YLeftLift,     tmotorVex393_MC29, openLoop)
@@ -19,25 +19,25 @@
 void pre_auton(){
 }
 
-void driveTank(){
-	motor[leftFront] = vexRT[leftFront];
-	motor[rightFront] = -vexRT[rightFront];
-	motor[leftBack] = vexRT[leftBack];
-	motor[rightBack] = -vexRT[rightBack];
+void driveTank(int joyLeft, int joyRight){ // drive Tank code
+	motor[leftFront] = vexRT[Ch3];
+	motor[rightFront] = vexRT[Ch2];
+	motor[leftBack] = vexRT[Ch3];
+	motor[rightBack] = vexRT[Ch2];
 }
 
 void driveArcade(int joy){
 	motor[leftFront] = joy;
-	motor[rightFront] = -joy;
+	motor[rightFront] = joy;
 	motor[leftBack] = joy;
-	motor[rightBack] = -joy;
+	motor[rightBack] = joy;
 }
 
 void driveForward(float time){ //TODO: PID LOOP
 	motor[leftFront] = 127;
-	motor[rightFront] = -127;
+	motor[rightFront] = 127;
 	motor[leftBack] = 127;
-	motor[rightBack] = -127;
+	motor[rightBack] = 127;
 	wait1Msec(time);
 	motor[leftFront] = 0;
 	motor[rightFront] = 0;
@@ -47,9 +47,9 @@ void driveForward(float time){ //TODO: PID LOOP
 
 void driveBackward(float time){ //TODO: PID LOOP
 	motor[leftFront] = -127;
-	motor[rightFront] = 127;
+	motor[rightFront] = -127;
 	motor[leftBack] = -127;
-	motor[rightBack] = 127;
+	motor[rightBack] = -127;
 	wait1Msec(time);
 	motor[leftFront] = 0;
 	motor[rightFront] = 0;
@@ -94,7 +94,7 @@ task usercontrol(){
 				turnLEDOn(dgtl1);
 				turnLEDOff(dgtl2);
 			}
-			wait1Msec(500);
+			wait1Msec(50);
 		}
 
 		if(vexRT[Btn6U]){ // Lift up
@@ -114,23 +114,17 @@ task usercontrol(){
 		}
 
 		if(useTank){
-			driveTank();
+			int joyRight = vexRT[Ch2];
+			int joyLeft = vexRT[Ch3];
+			driveTank(joyLeft, joyRight);
 		}else{
 			int joy_x = vexRT[Ch1];
 			int joy_y = vexRT[Ch2];
-			int joy_threashold = 10;
-
-			if((abs(joy_y) > joy_threashold) && (joy_y>0)){
-				driveArcade(joy_y);
-			}else if((abs(joy_y) > joy_threashold) && (joy_y<0)){
-				driveArcade(joy_y);
-			}else if((abs(joy_x) > joy_threashold) && (joy_x>0)){
-				driveArcade(joy_x);
-			}else if((abs(joy_x) > joy_threashold) && (joy_x<0)){
-				driveArcade(joy_x);
-			}else{
-				driveArcade(0);
-			}
+      		int joy_threashold = 5;
+			motor[leftFront] = joy_y + joy_x;
+			motor[leftBack] = joy_y + joy_x;
+			motor[rightFront] = joy_y - joy_x;
+			motor[rightBack] = joy_y - joy_x;
 		}
 	}
 }
