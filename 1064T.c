@@ -69,6 +69,10 @@ void claw(int power){
 	motor[ClawRight] = power;
 }
 
+void lcdDisplay(){
+
+}
+
 task autonomous(){
 }
 
@@ -84,6 +88,8 @@ task usercontrol(){
 	}
 
 	while(true){
+		lcdDisplay();
+		
 		if(vexRT[Btn7U]){
 			if(useTank){
 				useTank = false;
