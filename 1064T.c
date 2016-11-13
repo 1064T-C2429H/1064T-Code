@@ -18,14 +18,15 @@
 
 void pre_auton(){
 }
-
-void driveTank(int joyLeft, int joyRight){ // drive Tank code
+// driver methods
+// drive Tank code method
+void driveTank(int joyLeft, int joyRight){
 	motor[leftFront] = vexRT[Ch3];
 	motor[rightFront] = vexRT[Ch2];
 	motor[leftBack] = vexRT[Ch3];
 	motor[rightBack] = vexRT[Ch2];
 }
-
+//drive arcade mode method
 void driveArcade(int joy){
 	motor[leftFront] = joy;
 	motor[rightFront] = joy;
@@ -56,14 +57,14 @@ void driveBackward(float time){ //TODO: PID LOOP
 	motor[leftBack] = 0;
 	motor[rightBack] = 0;
 }
-
+//lift method raise
 void lift(int power){
-	motor[YRightLift] = power;
-	motor[RightLift] = power;
-	motor[YLeftLift] = -power;
-	motor[LeftLift] = -power;
+	motor[YRightLift] = -power;
+	motor[RightLift] = -power;
+	motor[YLeftLift] = power;
+	motor[LeftLift] =  power;
 }
-
+//claw method
 void claw(int power){
 	motor[ClawLeft] = power;
 	motor[ClawRight] = power;
@@ -78,7 +79,7 @@ task usercontrol(){
 	if(!useTank){
 		turnLEDOn(dgtl2);
 		turnLEDOff(dgtl1);
-	}else{
+		}else{
 		turnLEDOn(dgtl1);
 		turnLEDOff(dgtl2);
 	}
@@ -89,7 +90,7 @@ task usercontrol(){
 				useTank = false;
 				turnLEDOn(dgtl2);
 				turnLEDOff(dgtl1);
-			}else{
+				}else{
 				useTank = true;
 				turnLEDOn(dgtl1);
 				turnLEDOff(dgtl2);
@@ -99,17 +100,17 @@ task usercontrol(){
 
 		if(vexRT[Btn6U]){ // Lift up
 			lift(127);
-		}else if(vexRT[Btn5U]){// Lift down
+			}else if(vexRT[Btn5U]){// Lift down
 			lift(-127);
-		}else{
+			}else{
 			lift(0);
 		}
 
 		if(vexRT[Btn6D]){ // Open claw
 			claw(127);
-		}else if(vexRT[Btn5D]){ // Close claw
+			}else if(vexRT[Btn5D]){ // Close claw
 			claw(-127);
-		}else{
+			}else{
 			claw(0);
 		}
 
@@ -117,10 +118,10 @@ task usercontrol(){
 			int joyRight = vexRT[Ch2];
 			int joyLeft = vexRT[Ch3];
 			driveTank(joyLeft, joyRight);
-		}else{
+			}else{
 			int joy_x = vexRT[Ch1];
 			int joy_y = vexRT[Ch2];
-      		int joy_threashold = 5;
+
 			motor[leftFront] = joy_y + joy_x;
 			motor[leftBack] = joy_y + joy_x;
 			motor[rightFront] = joy_y - joy_x;
