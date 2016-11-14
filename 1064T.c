@@ -368,6 +368,18 @@ void lcdDisplay(){
 			displayLCDCenteredString(0, "67.  Line - Right");
 			displayLCDNumber(1,0, SensorValue[AccelZ]);
 			break;
+		case 68:
+			//Display the Primary Robot battery voltage
+			displayLCDString(0, 0, "Primary: ");
+			sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the value to be displayed
+			displayNextLCDString(mainBattery);
+
+			//Display the Backup battery voltage
+			displayLCDString(1, 0, "Backup: ");
+			sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');    //Build the value to be displayed
+			displayNextLCDString(backupBattery);
+			//TODO: BUTTONS
+			break;
 		case 80: // Autonomous 1
 			break;
 		default:
