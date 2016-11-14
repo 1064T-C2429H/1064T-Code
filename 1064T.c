@@ -30,12 +30,6 @@ int GLOBAL_display = 0;
 const short lcdRightButton = 1;
 const short lcdCenterButton = 2;
 const short lcdLeftButton = 4;
-
-void pre_auton(){
-
-}
-// define accelerometer values
-
 // driver methods
 // drive Tank code method
 void driveTank(int joyLeft, int joyRight){
@@ -130,12 +124,12 @@ void lcdDisplay(){
 
 				}
 			}else if(nLCDButtons == lcdLeftButton){ // Next Page
-			waitForLCDButtonRelease();
+				waitForLCDButtonRelease();
 				GLOBAL_display = 2;
 			}
 			break;
 		case 2:
-			displayLCDCenteredString(0, "      Debug     ");
+			displayLCDCenteredString(0, "2.    Debug     ");
 			displayLCDCenteredString(1, "<      [X]     >");
 			if(nLCDButtons == lcdRightButton){
 				waitForLCDButtonRelease();
@@ -146,11 +140,128 @@ void lcdDisplay(){
 				if(nLCDButtons == lcdCenterButton){ //Go back one page
 					GLOBAL_display = 0;
 				}else{ // Enter
-
+					GLOBAL_display = 50;
 				}
 			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
 				GLOBAL_display = 3;
 			}
+			break;
+		case 3:
+			displayLCDCenteredString(0, "3.      Settings");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 2;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 0;
+				}else{ // Enter
+					GLOBAL_display = 0; // TODO: make settings
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 4;
+			}
+			break;
+		case 50: // Debug Menu - Gyro 1
+			displayLCDCenteredString(0, "50.     Gyro - 1");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){ // Right button Click
+				waitForLCDButtonRelease();
+				GLOBAL_display = 54;
+			}else if(nLCDButtons == lcdCenterButton){ // Center button clicked
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 2;
+				}else{ // Enter
+					GLOBAL_display = 60;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 3;
+			}
+			break;
+		case 51: // Debug Menu - Gyro 2
+			displayLCDCenteredString(0, "51.     Gyro - 2");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 50;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 2;
+				}else{ // Enter
+					GLOBAL_display = 61;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 3;
+			}
+			break;
+		case 52: // Debug Menu - Acelerometer
+			displayLCDCenteredString(0, "52. Acelerometer");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 51;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 2;
+				}else{ // Enter
+					GLOBAL_display = 62;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 53;
+			}
+			break;
+		case 53: // Debug Menu - Line Followers
+			displayLCDCenteredString(0, "53. Line Sensor ");
+			displayLCDCenteredString(1, "<      [X]     >");
+			break;
+		case 54: // Debug Menu - UPS
+			break;
+		case 60: // Debug - Gyro 1
+			displayLCDCenteredString(0, "60.    Gyro - 1 ");
+			displayLCDNumber(1,0, SensorValue[Gyro]);
+			break;
+		case 61: // Debug - Gyro 2
+			displayLCDCenteredString(0, "61. Gyro - 2    ");
+			displayLCDNumber(1,0, SensorValue[Gyro2]);
+			break;
+		case 62: // Debug - Acelerometer - X
+			displayLCDCenteredString(0, "62. Accel - X   ");
+			displayLCDNumber(1,0, SensorValue[AccelX]);
+			break;
+		case 63: // Debug - Acelerometer - Y
+			displayLCDCenteredString(0, "63. Accel - Y   ");
+			displayLCDNumber(1,0, SensorValue[AccelY]);
+			break;
+		case 64: // Debug - Acelerometer - Z
+			displayLCDCenteredString(0, "64. Accel - Z   ");
+			displayLCDNumber(1,0, SensorValue[AccelZ]);
+			break;
+		case 65: // Debug - LineFollower - Right
+			displayLCDCenteredString(0, "65. Line - Left ");
+			displayLCDNumber(1,0, SensorValue[AccelZ]);
+			break;
+		case 66: // Debug - LineFollower - Center
+			displayLCDCenteredString(0, "66. Line - Center");
+			displayLCDNumber(1,0, SensorValue[AccelZ]);
+			break;
+		case 67: // Debug - LineFollower - Left
+			displayLCDCenteredString(0, "67.  Line - Right");
+			displayLCDNumber(1,0, SensorValue[AccelZ]);
+			break;
+		case 80: // Autonomous 1
 			break;
 		default:
 			displayLCDCenteredString(0, "106T-Invalid Arg");
@@ -168,6 +279,10 @@ void lcdDisplay(){
 			}
 			break;
 	}
+}
+
+void pre_auton(){
+
 }
 
 task autonomous(){
