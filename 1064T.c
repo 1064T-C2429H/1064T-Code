@@ -226,28 +226,135 @@ void lcdDisplay(){
 		case 53: // Debug Menu - Line Followers
 			displayLCDCenteredString(0, "53. Line Sensor ");
 			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 52;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 2;
+				}else{ // Enter
+					GLOBAL_display = 63;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 54;
+			}
 			break;
 		case 54: // Debug Menu - UPS
+			displayLCDCenteredString(0, "54.    UPS      ");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 53;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 2;
+				}else{ // Enter
+					GLOBAL_display = 64;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 50;
+			}
 			break;
 		case 60: // Debug - Gyro 1
 			displayLCDCenteredString(0, "60.    Gyro - 1 ");
 			displayLCDNumber(1,0, SensorValue[Gyro]);
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 67;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					// GLOBAL_display = 50;
+				}else{ // Enter
+					GLOBAL_display = 50;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 61;
+			}
 			break;
 		case 61: // Debug - Gyro 2
 			displayLCDCenteredString(0, "61. Gyro - 2    ");
 			displayLCDNumber(1,0, SensorValue[Gyro2]);
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 61;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					//GLOBAL_display = 2;
+				}else{ // Enter
+					GLOBAL_display = 51;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				//waitForLCDButtonRelease();
+				//GLOBAL_display = 50;
+			}
 			break;
 		case 62: // Debug - Acelerometer - X
 			displayLCDCenteredString(0, "62. Accel - X   ");
 			displayLCDNumber(1,0, SensorValue[AccelX]);
+			if(nLCDButtons == lcdRightButton){ // X
+				//waitForLCDButtonRelease();
+				//GLOBAL_display = 53;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page or go to Y
+					GLOBAL_display = 52;
+				}else{ // Enter
+					GLOBAL_display = 63;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 64;
+			}
 			break;
 		case 63: // Debug - Acelerometer - Y
 			displayLCDCenteredString(0, "63. Accel - Y   ");
 			displayLCDNumber(1,0, SensorValue[AccelY]);
+			if(nLCDButtons == lcdRightButton){ // X
+				//waitForLCDButtonRelease();
+				//GLOBAL_display = 53;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page or go to Y
+					GLOBAL_display = 52;
+				}else{ // Enter
+					GLOBAL_display = 63;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 64;
+			}
 			break;
 		case 64: // Debug - Acelerometer - Z
 			displayLCDCenteredString(0, "64. Accel - Z   ");
 			displayLCDNumber(1,0, SensorValue[AccelZ]);
+			if(nLCDButtons == lcdRightButton){ // X
+				//waitForLCDButtonRelease();
+				//GLOBAL_display = 53;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page or go to Y
+					GLOBAL_display = 52;
+				}else{ // Enter
+					GLOBAL_display = 63;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				waitForLCDButtonRelease();
+				GLOBAL_display = 64;
+			}
 			break;
 		case 65: // Debug - LineFollower - Right
 			displayLCDCenteredString(0, "65. Line - Left ");
