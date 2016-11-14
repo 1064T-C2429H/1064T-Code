@@ -1,3 +1,11 @@
+#pragma config(Sensor, in1,    Gyro,           sensorGyro)
+#pragma config(Sensor, in2,    Gyro2,          sensorGyro)
+#pragma config(Sensor, in3,    AccelX,         sensorAccelerometer)
+#pragma config(Sensor, in4,    AccelY,         sensorAccelerometer)
+#pragma config(Sensor, in5,    AccelZ,         sensorAccelerometer)
+#pragma config(Sensor, in6,    LineClawRight,  sensorLineFollower)
+#pragma config(Sensor, in7,    LineClawLeft,   sensorLineFollower)
+#pragma config(Sensor, in8,    LineClawMid,    sensorLineFollower)
 #pragma config(Sensor, dgtl1,  ledTank,        sensorLEDtoVCC)
 #pragma config(Sensor, dgtl2,  ledArcade,      sensorLEDtoVCC)
 #pragma config(Motor,  port1,           leftFront,     tmotorVex393_HBridge, openLoop)
@@ -16,8 +24,18 @@
 #pragma competitionControl(Competition)
 #include "Vex_Competition_Includes.c"
 
+//init global varibals
+int GLOBAL_display = 0;
+
+const short lcdRightButton = 1;
+const short lcdCenterButton = 2;
+const short lcdLeftButton = 4;
+
 void pre_auton(){
+
 }
+// define accelerometer values
+
 // driver methods
 // drive Tank code method
 void driveTank(int joyLeft, int joyRight){
@@ -70,8 +88,86 @@ void claw(int power){
 	motor[ClawRight] = power;
 }
 
-void lcdDisplay(){
+void waitForLCDButtonRelease(){
+while(nLCDButtons == 0){}
+wait1Msec(5);
+}
 
+void lcdDisplay(){
+	bLCDBacklight = true;
+	clearLCDLine(0);
+	clearLCDLine(1);
+	switch(GLOBAL_display){
+		case -1: //Locked with password
+			break;
+		case 0:
+			displayLCDCenteredString(0, "106T            ");
+			displayLCDCenteredString(1, "Press any key   ");
+
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 1;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 1;
+			}else if(nLCDButtons == lcdLeftButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display =1;
+			}
+			break;
+		case 1:
+			displayLCDCenteredString(0, "1. Auton Select ");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 0;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 0;
+				}else{ // Enter
+
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+			waitForLCDButtonRelease();
+				GLOBAL_display = 2;
+			}
+			break;
+		case 2:
+			displayLCDCenteredString(0, "      Debug     ");
+			displayLCDCenteredString(1, "<      [X]     >");
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 1;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				wait1Msec(1000);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page
+					GLOBAL_display = 0;
+				}else{ // Enter
+
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Next Page
+				GLOBAL_display = 3;
+			}
+			break;
+		default:
+			displayLCDCenteredString(0, "106T-Invalid Arg");
+			displayLCDCenteredString(1, "Press any key   ");
+
+			if(nLCDButtons == lcdRightButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 0;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 0;
+			}else if(nLCDButtons == lcdLeftButton){
+				waitForLCDButtonRelease();
+				GLOBAL_display = 0;
+			}
+			break;
+	}
 }
 
 task autonomous(){
@@ -90,7 +186,7 @@ task usercontrol(){
 
 	while(true){
 		lcdDisplay();
-		
+
 		if(vexRT[Btn7U]){
 			if(useTank){
 				useTank = false;
@@ -101,7 +197,7 @@ task usercontrol(){
 				turnLEDOn(dgtl1);
 				turnLEDOff(dgtl2);
 			}
-			wait1Msec(50);
+			wait1Msec(200);
 		}
 
 		if(vexRT[Btn6U]){ // Lift up
