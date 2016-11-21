@@ -96,7 +96,7 @@ void waitForRelease()
 }
 //----------------------------------------------------------------
 
-void lcdDisplay(){
+void lcdDisplay(long delta){
 	string mainBattery, backupBattery;
 	bLCDBacklight = true;
 	clearLCDLine(0);
@@ -261,7 +261,7 @@ void lcdDisplay(){
 					GLOBAL_display = 2;
 					wait1Msec(GLOBAL_DOUBLE_CLICK_SPEED);
 				}else{ // Enter
-					GLOBAL_display = 64;
+					GLOBAL_display = 65;
 				}
 			}else if(nLCDButtons == lcdLeftButton){ // Next Page
 				waitForRelease();
@@ -373,6 +373,27 @@ void lcdDisplay(){
 				GLOBAL_display = 64;
 			}
 			break;
+		case 65: // Debug - Updates Per Seconds
+			displayLCDCenteredString(0, "64. Accel - Z   ");
+			displayLCDNumber(1,0, delta);
+			waitForPress();
+			if(nLCDButtons == lcdRightButton){ // X
+				waitForRelease();
+				GLOBAL_display = 62;
+			}else if(nLCDButtons == lcdCenterButton){
+				waitForRelease();
+				wait1Msec(GLOBAL_DOUBLE_CLICK_SPEED);
+				if(nLCDButtons == lcdCenterButton){ //Go back one page or go to Y
+					GLOBAL_display = 64;
+					wait1Msec(GLOBAL_DOUBLE_CLICK_SPEED);
+				}else{ // Enter
+					GLOBAL_display = 64;
+				}
+			}else if(nLCDButtons == lcdLeftButton){ // Go to Z
+				waitForRelease();
+				GLOBAL_display = 64;
+			}
+			break;
 		case 68:
 			//Display the Primary Robot battery voltage
 			displayLCDString(0, 0, "Primary: ");
@@ -415,6 +436,8 @@ task autonomous(){
 task usercontrol(){
 	bool useTank = true;
 
+	long lastTime = nSysTime;
+
 	if(!useTank){
 		turnLEDOn(dgtl2);
 		turnLEDOff(dgtl1);
@@ -424,7 +447,11 @@ task usercontrol(){
 	}
 
 	while(true){
-		lcdDisplay();
+		long time = nSysTime;
+		long delta = time - lastTime;
+		lastTime = time;
+
+		lcdDisplay(delta);
 
 		if(vexRT[Btn7U]){
 			if(useTank){
