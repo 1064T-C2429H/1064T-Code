@@ -67,7 +67,7 @@ void driveTank(int joyLeft, int joyRight){
 	motor[rightBack] = vexRT[Ch2];
 }
 
-//auton method to drive foward
+//auton method for Drive on the Y axis
 void driveY(int power){
 	motor[leftFront]  =  power;
 	motor[rightFront] =  power;
@@ -75,6 +75,70 @@ void driveY(int power){
 	motor[rightBack]  =  power;
 }
 
+//auton method to turn drive based on Gyro avg
+void gyroTurn(int degrees2){
+		//gyro config
+		//Completely clear out any previous sensor readings by setting the port to "sensorNone"
+		SensorType[Gyro] = sensorNone;
+		SensorType[Gyro2] = sensorNone;
+		wait1Msec(500);
+		//Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
+		SensorType[Gyro] = sensorGyro;
+		SensorType[Gyro2] = sensorGyro;
+		wait1Msec(1500);
+
+		//Adjust SensorScale to correct the scaling for your gyro
+		//SensorScale[in8] = 260;
+		//Adjust SensorFullCount to set the "rollover" point. A value of 3600 sets the rollover point to +/-3600
+		//SensorFullCount[in8] = 3600;
+
+		//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+		int degrees10 = degrees2;
+		//Specify the amount of acceptable error in the turn
+		int error = 5;
+
+		//While the absolute value of the gyro is less than the desired rotation - 100...
+		while(SensorValue[Gyro] < degrees10 - 100)
+		{
+			motor[rightFront] = 127;
+			motor[leftFront] = -127;
+			motor[rightBack] = 127;
+			motor[leftBack] = -127;
+		}
+		//Brief brake to eliminate some drift
+		motor[rightFront] = -5;
+		motor[leftFront] = 5;
+		motor[rightBack] = -5;
+		motor[leftBack] = 5;
+		wait1Msec(100);
+
+		//Second while loop to move the robot more slowly to its goal, also setting up a range
+		//for the amount of acceptable error in the system
+		while(SensorValue[Gyro] > degrees10 + error || SensorValue[Gyro] < degrees10 - error)
+		{
+			if(SensorValue[Gyro] > degrees10)
+			{
+				motor[rightFront] = -100;
+				motor[leftFront] = 100;
+				motor[rightBack] = -100;
+				motor[leftBack] = 100;
+			}
+			else
+			{
+				motor[rightFront] = 100;
+				motor[leftFront] = -100;
+				motor[rightBack] = 100;
+				motor[leftBack] = -100;
+			}
+		}
+		//Stop
+		motor[rightFront] = 0;
+		motor[leftFront] = 0;
+		motor[rightBack] = 0;
+		motor[leftBack] = 0;
+		wait1Msec(250);
+
+}
 //lift method raise
 void lift(int power){
 	motor[YRightLift] = -power;
@@ -138,7 +202,7 @@ void pre_auton(){
 			break;
 		case 2:
 			//Display third choice
-			displayLCDCenteredString(0, "Auton option 3");
+			displayLCDCenteredString(0, "Gyro turn");
 			displayLCDCenteredString(1, "<		 Enter		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -201,7 +265,7 @@ task autonomous(){
 		//If count = 0, run the code correspoinding with choice 1
 		displayLCDCenteredString(0, "Knock down stars");
 		displayLCDCenteredString(1, "   is running!  ");
-    driveY(127); 		wait1Msec(2000); //Bot drives up to fence
+		driveY(127); 		wait1Msec(2000); //Bot drives up to fence
 		driveY(0); 		  wait1Msec(1);    //stop bot
 		lift(127);      wait1Msec(1000); //Raise lift to fence
 		lift(0);				wait1Msec(1);		 //Stop bot
@@ -222,9 +286,10 @@ task autonomous(){
 		break;
 	case 2:
 		//If count = 2, run the code correspoinding with choice 3
-		displayLCDCenteredString(0, "Auton option 3");
+		displayLCDCenteredString(0, "Gyro Turn");
 		displayLCDCenteredString(1, "is running!");
-		wait1Msec(2);						// Robot waits for 2000 milliseconds
+		gyroTurn(-900);
+
 
 		//third auton option
 		break;
