@@ -70,7 +70,7 @@ void claw(int power){
 }
 
 void lcdDisplay(){
-
+	
 }
 
 task autonomous(){
@@ -89,7 +89,7 @@ task usercontrol(){
 
 	while(true){
 		lcdDisplay();
-		
+
 		if(vexRT[Btn7U]){
 			if(useTank){
 				useTank = false;
