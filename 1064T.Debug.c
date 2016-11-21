@@ -430,6 +430,14 @@ void pre_auton(){
 
 }
 
+int pid(int desired, int actual, int PID_Integral, int PID_P, int PID_I, int PID_D, int bias){
+	//PID
+	int error = desired - actual;
+	PID_Integral = PID_Tntegral + (error*1);
+	int drivativeRight = (errorRight - errorPrior)/1;
+	int outputRight = PID_P*error + PID_I*PID_INtegral + PID_D*derivativeRight + bias;
+}
+
 task autonomous(){
 }
 
@@ -437,6 +445,12 @@ task usercontrol(){
 	bool useTank = true;
 
 	long lastTime = nSysTime;
+
+	int errorPrior = 0;
+	int PID_Integral = 0;
+	float PID_P = 0;
+	float PID_I = 0;
+	float PID_D = 0;
 
 	if(!useTank){
 		turnLEDOn(dgtl2);
@@ -486,14 +500,24 @@ task usercontrol(){
 			int joyRight = vexRT[Ch2];
 			int joyLeft = vexRT[Ch3];
 			driveTank(joyLeft, joyRight);
-			}else{
-			int joy_x = vexRT[Ch1];
-			int joy_y = vexRT[Ch2];
+			//driveTank(pid(joyRight, sensorValue, PID_Integral, PID_P, PID_I, PID_D, 1), pid(joyLeft, sensorValue, PID_Integral, PID_P, PID_I, PID_D, 1));
+		}else{
+			int joyX = vexRT[Ch1];
+			int joyY = vexRT[Ch2];
 
-			motor[leftFront] = joy_y + joy_x;
-			motor[leftBack] = joy_y + joy_x;
-			motor[rightFront] = joy_y - joy_x;
-			motor[rightBack] = joy_y - joy_x;
+			int leftDesiredDesired = joyY + joyX;
+			int rightDesired = joyY - joyX;
+
+			motor[leftFront] = leftDesired;
+			motor[leftBack] = leftDesired;
+			motor[rightFront] = rightDesired;
+			motor[rightBack] = rightDesired;
+
+			//motor[leftFront] = pid(leftDesired, sensorValue, PID_Integral, PID_P, PID_I, PID_D, 1);
+			//motor[leftBack] = pid(leftDesired, sensorValue, PID_Integral, PID_P, PID_I, PID_D, 1);
+			//motor[rightFront] = pid(rightDesired, sensorValue, PID_Integral, PID_P, PID_I, PID_D, 1);
+			//motor[rightBack] = pid(rightDesired, sensorValue, PID_Integral, PID_P, PID_I, PID_D, 1)
 		}
+		wait1Msec(1);
 	}
 }
