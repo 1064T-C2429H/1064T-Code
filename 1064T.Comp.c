@@ -32,55 +32,58 @@ task userDisplay(){
 		if (nLCDButtons == 1){
 			driveCount--;
 			resetLcd();
-			while(nLCDButtons == 1)(wait1Msec(10));
+			while(nLCDButtons == 1){
+				wait1Msec(10);
+			}
 		}
 		if(nLCDButtons == 4){
 			driveCount++;
 			resetLcd();
-			while(nLCDButtons == 4)(wait1Msec(10));
+			while(nLCDButtons == 4){
+				wait1Msec(10);
+			}
 		}
 		if(driveCount < 0){
 			driveCount = 10;
-		}
-		else if(driveCount > 10){
+		}else if(driveCount > 10){
 			driveCount = 0;
 		}
 		switch (driveCount){
-		case 0:
-			displayBatteryValues();
-			break;
-		case 1:
-			avgGyroValue();
-			break;
-		case 2:
-			nothing();
-			break;
-			nothing();
-		case 3:
-			break;
-		case 4:
-			nothing();
-			break;
-		case 5:
-			nothing();
-			break;
-		case 6:
-			nothing();
-			break;
-		case 7:
-			nothing();
-			break;
-		case 8:
-			nothing();
-			break;
-		case 9:
-			nothing();
-			break;
-		case 10:
-			nothing();
-			break;
+			case 0:
+				displayBatteryValues();
+				break;
+			case 1:
+				avgGyroValue();
+				break;
+			case 2:
+				nothing();
+				break;
+				nothing();
+			case 3:
+				break;
+			case 4:
+				nothing();
+				break;
+			case 5:
+				nothing();
+				break;
+			case 6:
+				nothing();
+				break;
+			case 7:
+				nothing();
+				break;
+			case 8:
+				nothing();
+				break;
+			case 9:
+				nothing();
+				break;
+			case 10:
+				nothing();
+				break;
 		}
-		time(10);
+		wait1Msec(10);
 	}
 }
 
@@ -94,7 +97,6 @@ void pre_auton(){
 task autonomous(){
 	lcdAuton();
 }
-//---------------END of auton---------------------------------------
 
 task usercontrol(){
 	resetLcd();
@@ -105,7 +107,7 @@ task usercontrol(){
 	if(!useTank){ //LED driver type indicater
 		turnLEDOn(dgtl2);
 		turnLEDOff(dgtl1);
-		}else{
+	}else{
 		turnLEDOn(dgtl1);
 		turnLEDOff(dgtl2);
 	}
@@ -128,11 +130,13 @@ task usercontrol(){
 		}
 
 		if(vexRT[Btn7L]){
-			claw(-127); time(300);
+			claw(-127); 
+			wait1Msec(300);
 		}
 
 		if(vexRt[Btn7R]){
-			claw(127); time(300);
+			claw(127); 
+			wait1Msec(300);
 		}
 
 		bool useTank = true;
@@ -140,7 +144,7 @@ task usercontrol(){
 		if(!useTank){ //LED driver type indicater
 			turnLEDOn(dgtl2);
 			turnLEDOff(dgtl1);
-			}else{
+		}else{
 			turnLEDOn(dgtl1);
 			turnLEDOff(dgtl2);
 		}
@@ -149,7 +153,7 @@ task usercontrol(){
 				useTank = false;
 				turnLEDOn(dgtl2);
 				turnLEDOff(dgtl1);
-				}else{
+			}else{
 				useTank = true;
 				turnLEDOn(dgtl1);
 				turnLEDOff(dgtl2);
@@ -160,7 +164,7 @@ task usercontrol(){
 			int joyRight = vexRT[Ch2];
 			int joyLeft = vexRT[Ch3];
 			drive(joyLeft, joyRight);
-			}else{
+		}else{
 			int joy_x = vexRT[Ch1];
 			int joy_y = vexRT[Ch2];
 
@@ -169,19 +173,20 @@ task usercontrol(){
 			motor[rightFront] = joy_y - joy_x;
 			motor[rightBack] = joy_y - joy_x;
 		}
+
 		if(vexRT[Btn6U]){ // Lift up
 			lift(127);
-			}else if(vexRT[Btn6D]){// Lift down
+		}else if(vexRT[Btn6D]){// Lift down
 			lift(-127);
-			}else{
+		}else{
 			lift(0);
 		}
 
 		if(vexRT[Btn5U]){ // Open claw
 			claw(-127);
-			}else if(vexRT[Btn5D]){ // Close claw
+		}else if(vexRT[Btn5D]){ // Close claw
 			claw(127);
-			}else{
+		}else{
 			claw(0);
 		}
 	}

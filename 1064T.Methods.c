@@ -24,9 +24,6 @@
 #pragma competitionControl(Competition)
 #include "Vex_Competition_Includes.c"
 
-//----///////////////////////////////GLOBALS/////////////////////////////////////////////////----
-//(SensorValue[Gyro1] + SensorValue[Gyro2])/2
-//--------------------LCD variables-------------------------------
 //Declare count variable to keep track of our choice
 int driveCount = 0; //drivemodecount
 int autonSelec = 0; //auton mode
@@ -35,8 +32,6 @@ int autonComp  = 0; //auton
 const short leftButton   = 1;
 const short centerButton = 2;
 const short rightButton  = 4;
-
-//----///////////////////////////////DRIVER METHODS///////////////////////////////////////////----
 
 void lift(int power){//User/Control method controls the robots lift (positive power raises the lift
 	motor[YRightLift] = -power;
@@ -56,38 +51,34 @@ void drive(int left, int right){//Tank drive auton control method
 	motor[rightBack]  =  right;
 }
 
-void time(int Msecs){//This method pauses code for a specified time
-	wait1Msec(Msecs);
-}
-
-//----///////////////////////////////Auton Selections////////////////////////////////////////----
-
 void auton1(){
-	lift(127); claw(127);                  time(175);
-	lift(127); drive(127, 127); claw(0);   time(2000);
-	lift(0); drive(0, 0); claw(0);         time(100000);
+	lift(127); claw(127);                  
+	wait1Msec(175);
+	lift(127); drive(127, 127); claw(0);   
+	wait1Msec(2000);
+	lift(0); drive(0, 0); claw(0);         
+	wait1Msec(100000);
 }
 
-void autonLift(int power,int time){
-	lift(power); wait1Msec(time);
+void autonLift(int power,int wait1Msec){
+	lift(power); 
+	wait1Msec(wait1Msec);
 }
 
 void auton3(){
-	time(1);
+	wait1Msec(1);
 }
 
 void auton4(){
-	time(1);
+	wait1Msec(1);
 }
-
-//----///////////////////////////////SENSOR METHODS//////////////////////////////////////////----
 
 void resetGyro(){ //resets the Gryos during the robots start up
 	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
 	SensorType[in1] = sensorNone;
 	SensorType[in2] = sensorNone;
 	wait1Msec(1000);
-	//Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
+	//Reconfigure Analog Port 8 as a Gyro sensor and allow wait1Msec for ROBOTC to calibrate it
 	SensorType[in1] = sensorGyro;
 	SensorType[in2] = sensorGyro;
 	wait1Msec(2000);
@@ -111,8 +102,7 @@ void gyroTurn(int degrees2){
 	int error = 5;
 
 	//While the absolute value of the gyro is less than the desired rotation - 100...
-	while((SensorValue[Gyro1] + SensorValue[Gyro2])/2 < degrees10 - 100)
-	{
+	while((SensorValue[Gyro1] + SensorValue[Gyro2])/2 < degrees10 - 100){
 		motor[rightFront] =  127;
 		motor[leftFront]  = -127;
 		motor[rightBack]  =  127;
@@ -127,17 +117,13 @@ void gyroTurn(int degrees2){
 
 	//Second while loop to move the robot more slowly to its goal, also setting up a range
 	//for the amount of acceptable error in the system
-	while((SensorValue[Gyro1] + SensorValue[Gyro2])/2 > degrees10 + error || (SensorValue[Gyro1] + SensorValue[Gyro2])/2 < degrees10 - error)
-	{
-		if((SensorValue[Gyro1] + SensorValue[Gyro2])/2 > degrees10)
-		{
+	while((SensorValue[Gyro1] + SensorValue[Gyro2])/2 > degrees10 + error || (SensorValue[Gyro1] + SensorValue[Gyro2])/2 < degrees10 - error){
+		if((SensorValue[Gyro1] + SensorValue[Gyro2])/2 > degrees10){
 			motor[rightFront] = -100;
 			motor[leftFront]  =  100;
 			motor[rightBack]  = -100;
 			motor[leftBack]   =  100;
-		}
-		else
-		{
+		}else{
 			motor[rightFront] =  100;
 			motor[leftFront]  = -100;
 			motor[rightBack]  =  100;
@@ -189,13 +175,10 @@ void selectAuton(){
 			displayLCDCenteredString(1, "<		 Enter		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
-			if(nLCDButtons == leftButton)
-			{
+			if(nLCDButtons == leftButton){
 				waitForRelease();
 				autonSelec = 3;
-			}
-			else if(nLCDButtons == rightButton)
-			{
+			}else if(nLCDButtons == rightButton){
 				waitForRelease();
 				autonSelec++;
 			}
@@ -206,13 +189,10 @@ void selectAuton(){
 			displayLCDCenteredString(1, "<		 Enter		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
-			if(nLCDButtons == leftButton)
-			{
+			if(nLCDButtons == leftButton){
 				waitForRelease();
 				autonSelec--;
-			}
-			else if(nLCDButtons == rightButton)
-			{
+			}else if(nLCDButtons == rightButton){
 				waitForRelease();
 				autonSelec++;
 			}
@@ -223,13 +203,10 @@ void selectAuton(){
 			displayLCDCenteredString(1, "<		 Enter		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
-			if(nLCDButtons == leftButton)
-			{
+			if(nLCDButtons == leftButton){
 				waitForRelease();
 				autonSelec--;
-			}
-			else if(nLCDButtons == rightButton)
-			{
+			}else if(nLCDButtons == rightButton){
 				waitForRelease();
 				autonSelec++;
 			}
@@ -240,13 +217,10 @@ void selectAuton(){
 			displayLCDCenteredString(1, "<		 Enter		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
-			if(nLCDButtons == leftButton)
-			{
+			if(nLCDButtons == leftButton){
 				waitForRelease();
 				autonSelec--;
-			}
-			else if(nLCDButtons == rightButton)
-			{
+			}else if(nLCDButtons == rightButton){
 				waitForRelease();
 				autonSelec = 4;
 			}
@@ -256,13 +230,10 @@ void selectAuton(){
 			displayBatteryValues();
 			waitForPress();
 			//Increment or decrement "count" based on button press
-			if(nLCDButtons == leftButton)
-			{
+			if(nLCDButtons == leftButton){
 				waitForRelease();
 				autonSelec--;
-			}
-			else if(nLCDButtons == rightButton)
-			{
+			}else if(nLCDButtons == rightButton){
 				waitForRelease();
 				autonSelec = 0;
 			}
@@ -270,14 +241,14 @@ void selectAuton(){
 			autonSelec = 0;
 			break;
 		}
-		time(10);
+		wait1Msec(10);
 	}
 }
 
 void nothing(){
 	displayLCDCenteredString(0, "nothing");
 	displayLCDCenteredString(1, "here");
-	time(10);
+	wait1Msec(10);
 }
 void lcdAuton(){ //autonomous selection on lcd
 	resetLcd();
