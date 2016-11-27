@@ -41,6 +41,7 @@ const int GLOBAL_DOUBLE_CLICK_SPEED = 250;
 const short lcdRightButton = 1;
 const short lcdCenterButton = 2;
 const short lcdLeftButton = 4;
+
 // driver methods
 // drive Tank code method
 void driveTank(int joyLeft, int joyRight){
@@ -49,6 +50,7 @@ void driveTank(int joyLeft, int joyRight){
 	motor[leftBack] = vexRT[Ch3];
 	motor[rightBack] = vexRT[Ch2];
 }
+
 //drive arcade mode method
 void driveArcade(int joy){
 	motor[leftFront] = joy;
@@ -93,23 +95,79 @@ void claw(int power){
 	motor[ClawRight] = power;
 }
 
-//Wait for Press--------------------------------------------------
+//Wait for Press
 void waitForPress(){
 	while(nLCDButtons == 0){}
 	wait1Msec(5);
 }
-//----------------------------------------------------------------
-
-//Wait for Release------------------------------------------------
+//Wait for Release
 void waitForRelease(){
 	while(nLCDButtons != 0){}
 	wait1Msec(5);
 }
-//----------------------------------------------------------------
+
+void resetGyro(){
+	//gyro config
+	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
+	SensorType[Gyro] = sensorNone;
+	SensorType[Gyro2] = sensorNone;
+	wait1Msec(500);
+	//Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
+	SensorType[Gyro] = sensorGyro;
+	SensorType[Gyro2] = sensorGyro;
+	wait1Msec(1500);
+}
+void turnByGyro(int degrees2){
+	//Adjust SensorScale to correct the scaling for your gyro
+	//SensorScale[in8] = 260;
+	//Adjust SensorFullCount to set the "rollover" point. A value of 3600 sets the rollover point to +/-3600
+	//SensorFullCount[in8] = 3600;
+
+	//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+	int degrees10 = degrees2;
+	//Specify the amount of acceptable error in the turn
+	int error = 5;
+
+	//While the absolute value of the gyro is less than the desired rotation - 100...
+	while(SensorValue[Gyro] < degrees10 - 100){
+		motor[rightFront] = 127;
+		motor[leftFront] = -127;
+		motor[rightBack] = 127;
+		motor[leftBack] = -127;
+	}
+	//Brief brake to eliminate some drift
+	motor[rightFront] = -5;
+	motor[leftFront] = 5;
+	motor[rightBack] = -5;
+	motor[leftBack] = 5;
+	wait1Msec(100);
+
+	//Second while loop to move the robot more slowly to its goal, also setting up a range
+	//for the amount of acceptable error in the system
+	while(SensorValue[Gyro] > degrees10 + error || SensorValue[Gyro] < degrees10 - error){
+		if(SensorValue[Gyro] > degrees10){
+			motor[rightFront] = -100;
+			motor[leftFront] = 100;
+			motor[rightBack] = -100;
+			motor[leftBack] = 100;
+		}else{
+			motor[rightFront] = 100;
+			motor[leftFront] = -100;
+			motor[rightBack] = 100;
+			motor[leftBack] = -100;
+		}
+	}
+	//Stop
+	motor[rightFront] = 0;
+	motor[leftFront] = 0;
+	motor[rightBack] = 0;
+	motor[leftBack] = 0;
+	wait1Msec(250);
+}
 
 
 void pre_auton(){
-
+	resetGyro();
 }
 
 int pid(int desired, int actual, int bias){
@@ -123,6 +181,13 @@ int pid(int desired, int actual, int bias){
 }
 
 task autonomous(){
+	bool running = false;
+	startTask(lcdDisplay);
+	while(running){
+
+		//stop the auton
+		running = false;
+	}
 }
 
 task usercontrol(){
@@ -133,7 +198,7 @@ task usercontrol(){
 	if(!useTank){
 		turnLEDOn(dgtl2);
 		turnLEDOff(dgtl1);
-		}else{
+	}else{
 		turnLEDOn(dgtl1);
 		turnLEDOff(dgtl2);
 	}
@@ -149,7 +214,7 @@ task usercontrol(){
 				useTank = false;
 				turnLEDOn(dgtl2);
 				turnLEDOff(dgtl1);
-				}else{
+			}else{
 				useTank = true;
 				turnLEDOn(dgtl1);
 				turnLEDOff(dgtl2);
@@ -159,25 +224,25 @@ task usercontrol(){
 
 		if(vexRT[Btn6U]){ // Lift up
 			lift(127);
-			}else if(vexRT[Btn5U]){// Lift down
+		}else if(vexRT[Btn5U]){// Lift down
 			lift(-127);
-			}else{
+		}else{
 			lift(0);
 		}
 
 		if(vexRT[Btn6D]){ // Open claw
 			claw(127);
-			}else if(vexRT[Btn5D]){ // Close claw
+		}else if(vexRT[Btn5D]){ // Close claw
 			claw(-127);
-			}else{
+		}else{
 			claw(0);
 		}
 
 		if(useTank){
 			int joyRight = vexRT[Ch2];
 			int joyLeft = vexRT[Ch3];
-			driveTank(joyLeft, joyRight);
 			driveTank(pid(joyRight, nMotorEncoder[rightBack], 1), pid(joyLeft, nMotorEncoder[leftBack], 1));
+			//driveTank(pid(joyRight, nMotorEncoder[rightBack], 1), pid(joyLeft, nMotorEncoder[leftBack], 1));
 		}else{
 			int joyX = vexRT[Ch1];
 			int joyY = vexRT[Ch2];
