@@ -45,6 +45,14 @@ void lift(int power){//User/Control method controls the robots lift (positive po
 	motor[LeftLift]   =  power;
 }
 
+void clawRight(int power){
+	motor[ClawLeft] = power;
+}
+
+void clawLeft(int power){
+	motor[ClawRight] = power;
+}
+
 void claw(int power) {
 	motor[ClawLeft]  = -power;
 	motor[ClawRight] =  power;
